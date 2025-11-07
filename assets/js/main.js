@@ -1,12 +1,20 @@
 function applySystemTheme() {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
     
-    if (prefersDark) {
-        document.body.classList.add('dark');
-    } else {
-        document.body.classList.remove('dark');
+    function updateTheme(e) {
+        if (e.matches) {
+            document.body.classList.add('dark');
+        } else {
+            document.body.classList.remove('dark');
+        }
     }
+    
+    updateTheme(darkQuery);
+
+    darkQuery.addEventListener('change', updateTheme);
 }
+
+applySystemTheme();
 
 const firebaseConfig = {
     apiKey: "AIzaSyC4IC6KmL7r4hQMaJpwxXcF9ag_8DPJjWg",
