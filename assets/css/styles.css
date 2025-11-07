@@ -18,7 +18,7 @@ body.dark {
   --divider-color: #333;
   --card-bg: #1e1e1e;
   --card-border: #333;
-  --card-hover-shadow: rgba(255, 255, 255, 0.05);
+  --card-hover-shadow: rgba(255, 255, 255, 0.3);
   --focus-color: #0099ff;
 }
 
@@ -55,6 +55,18 @@ body.login-page {
   padding: 2rem 0; 
   margin: 0 auto;
   flex-grow: 1;
+  text-align: center;
+}
+
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2.5rem 0 0;
+  text-align: center;
+}
+
+.header-info {
   text-align: center;
 }
 
@@ -180,18 +192,6 @@ footer {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 2.5rem 0 0;
-    text-align: center;
-}
-
-.header-info {
-    text-align: center;
-}
-
 .logout-button {
     position: absolute; 
     top: 20px;
@@ -228,7 +228,7 @@ footer {
   max-width: 400px;
   width: 100%;
   text-align: center;
-  box-shadow: 0 4px 12px var(--card-hover-shadow);
+  box-shadow: 0 0 20px var(--card-hover-shadow);
 }
 
 .login-box h2 {
