@@ -274,3 +274,27 @@ if (passwordInput && passwordToggle) {
         }
     });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const controls = document.querySelector('.controls');
+    
+    if (!controls) {
+        return;
+    }
+
+    function toggleScrolledClass(scrollY) {
+        if (scrollY > 0) {
+            controls.classList.add('scrolled');
+        } else {
+            controls.classList.remove('scrolled');
+        }
+    }
+
+    toggleScrolledClass(window.scrollY);
+
+    window.addEventListener('scroll', () => {
+        window.requestAnimationFrame(() => {
+            toggleScrolledClass(window.scrollY);
+        });
+    });
+});
