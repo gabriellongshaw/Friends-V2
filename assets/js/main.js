@@ -43,7 +43,7 @@ const logoutTimerDisplay = document.getElementById('logout-timer-display');
 
 const controlsContainer = document.querySelector('.controls');
 
-const SESSION_DURATION_MS = 300000;
+const SESSION_DURATION_MS = 600000;
 
 const LOCAL_STORAGE_EXPIRY_KEY = 'autoLogoutExpiry';
 let logoutTimer;
@@ -62,10 +62,6 @@ function formatTime(ms) {
     return `${paddedMinutes}:${paddedSeconds}`;
 }
 
-/**
- * Initializes and starts the visual countdown based on a fixed expiry time.
- * @param {number} initialTimeRemaining The time in milliseconds to start the countdown from.
- */
 function startLogoutTimer(initialTimeRemaining = SESSION_DURATION_MS) {
     
     clearTimeout(logoutTimer);
