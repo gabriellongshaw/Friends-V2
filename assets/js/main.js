@@ -58,21 +58,21 @@ function formatTime(ms) {
     return `${paddedMinutes}:${paddedSeconds}`;
 }
 
+/**
+ * Initializes and starts the visual countdown based on a fixed expiry time.
+ * @param {number} initialTimeRemaining The time in milliseconds to start the countdown from.
+ */
 function startLogoutTimer(initialTimeRemaining = SESSION_DURATION_MS) {
     
     clearTimeout(logoutTimer);
     clearInterval(countdownInterval);
-    
     const expiryTime = Date.now() + initialTimeRemaining;
-    
     localStorage.setItem(LOCAL_STORAGE_EXPIRY_KEY, expiryTime);
     
-    let timeRemaining = initialTimeRemaining;
-    
     const updateCountdown = () => {
-        timeRemaining -= 1000;
+        const currentTimeRemaining = expiryTime - Date.now(); 
         
-        if (timeRemaining <= 0) {
+        if (currentTimeRemaining <= 0) {
             clearInterval(countdownInterval);
             logoutTimerDisplay.textContent = 'Auto Logout in: 00:00';
             
@@ -87,15 +87,14 @@ function startLogoutTimer(initialTimeRemaining = SESSION_DURATION_MS) {
             return;
         }
         
-        const timeString = formatTime(timeRemaining);
+        const timeString = formatTime(currentTimeRemaining);
         logoutTimerDisplay.textContent = `Auto Logout in: ${timeString}`;
     };
-    
+
     updateCountdown();
     countdownInterval = setInterval(updateCountdown, 1000);
     
     logoutTimer = setTimeout(() => {
-        
         console.log("Fallback logout timeout reached.");
     }, initialTimeRemaining);
     
@@ -114,7 +113,6 @@ document.addEventListener('scroll', resetLogoutTimer);
 
 function resetLogoutTimer() {
     if (auth.currentUser) {
-        
         startLogoutTimer(SESSION_DURATION_MS);
         const now = new Date().toLocaleTimeString();
         console.log(`User activity detected at ${now}. Auto-logout timer reset.`);
