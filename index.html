@@ -35,18 +35,18 @@
       <div class="login-box">
         <h2>Website Access</h2>
         <p>Please sign in to view the profiles.</p>
-<form id="login-form">
+<form id="login-form" novalidate>
   <div class="input-group">
-    <input type="text" id="login-username" required placeholder=" ">
+    <input type="text" id="login-username" required placeholder=" " data-error-message="Please enter your username.">
     <label for="login-username">Username</label>
   </div>
   
-  <div class="input-group">
-    <input type="password" id="login-password" required placeholder=" ">
+  <div class="input-group password-group"> 
+    <input type="password" id="login-password" required placeholder=" " data-error-message="Please enter your password.">
     <label for="login-password">Password</label>
-  </div>
+    </div>
   
-  <button type="submit" id="login-button">Login</button>
+  <button type="submit" id="login-button" class="login-button">Login</button>
 </form>
 
         <p id="auth-error-message" class="error-message"></p>

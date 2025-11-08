@@ -143,6 +143,7 @@ function updateUI(user) {
         controlsContainer.classList.remove('visible');
         
         authErrorMessage.textContent = '';
+        authErrorMessage.classList.remove('show-error');
         console.log("User signed out.");
         clearTimeout(logoutTimer);
         clearInterval(countdownInterval);
@@ -157,10 +158,31 @@ if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        const inputUsername = loginForm.querySelector('#login-username').value.toLowerCase();
-        const password = loginForm.querySelector('#login-password').value;
-        
+        const authErrorMessage = document.getElementById('auth-error-message');
+        const showCustomError = (message) => {
+            authErrorMessage.textContent = message;
+            authErrorMessage.classList.add('show-error');
+        };
+
         authErrorMessage.textContent = '';
+        authErrorMessage.classList.remove('show-error');
+
+        const inputUsernameField = loginForm.querySelector('#login-username');
+        const passwordField = loginForm.querySelector('#login-password');
+        
+        const inputUsername = inputUsernameField.value.toLowerCase().trim();
+        const password = passwordField.value;
+        
+        if (!inputUsername) {
+            showCustomError(inputUsernameField.getAttribute('data-error-message'));
+            return;
+        }
+
+        if (!password) {
+            showCustomError(passwordField.getAttribute('data-error-message'));
+            return;
+        }
+
         const loginBtn = document.getElementById('login-button');
         loginBtn.disabled = true;
         loginBtn.textContent = 'Verifying...';
@@ -207,7 +229,7 @@ if (loginForm) {
                         message = 'An unknown login error occurred. Please try again.';
                 }
             }
-            authErrorMessage.textContent = message;
+            showCustomError(message);
         } finally {
             loginBtn.disabled = false;
             loginBtn.textContent = 'Login';
@@ -223,5 +245,32 @@ if (logoutButton) {
             console.error("Logout failed:", error);
             alert("Logout failed: " + error.message);
         });
+    });
+}
+
+const passwordInput = document.getElementById('login-password');
+const passwordToggle = document.getElementById('password-toggle');
+
+if (passwordInput && passwordToggle) {
+    
+    passwordInput.addEventListener('input', () => {
+        if (passwordInput.value.length > 0) {
+            passwordToggle.disabled = false;
+        } else {
+            passwordToggle.disabled = true;
+        }
+    });
+
+    passwordToggle.addEventListener('click', () => {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        
+        if (type === 'text') {
+            passwordToggle.classList.add('shown');
+            passwordToggle.setAttribute('aria-label', 'Hide password');
+        } else {
+            passwordToggle.classList.remove('shown');
+            passwordToggle.setAttribute('aria-label', 'Show password');
+        }
     });
 }
