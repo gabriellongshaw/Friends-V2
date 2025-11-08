@@ -195,7 +195,7 @@ footer {
 .controls {
     max-width: 900px;
     width: 90%;
-    margin: 0 auto 0;
+    margin: 1rem auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
