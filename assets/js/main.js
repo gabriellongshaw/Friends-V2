@@ -10,7 +10,7 @@ function applySystemTheme() {
     }
     
     updateTheme(darkQuery);
-
+    
     darkQuery.addEventListener('change', updateTheme);
 }
 
@@ -35,24 +35,72 @@ const logoutButton = document.getElementById('logout-button');
 const authContainer = document.getElementById('auth-container');
 const protectedContent = document.getElementById('protected-content');
 const authErrorMessage = document.getElementById('auth-error-message');
+const logoutTimerDisplay = document.getElementById('logout-timer-display');
 
-const SESSION_DURATION_MS = 600000;
+const controlsContainer = document.querySelector('.controls');
+
+const SESSION_DURATION_MS = 300000;
+
+const LOCAL_STORAGE_EXPIRY_KEY = 'autoLogoutExpiry';
 let logoutTimer;
+let countdownInterval;
 
-function startLogoutTimer() {
+function formatTime(ms) {
+    
+    const safeMs = Math.max(0, ms);
+    const totalSeconds = Math.floor(safeMs / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    
+    const paddedMinutes = String(minutes).padStart(2, '0');
+    const paddedSeconds = String(seconds).padStart(2, '0');
+    
+    return `${paddedMinutes}:${paddedSeconds}`;
+}
+
+function startLogoutTimer(initialTimeRemaining = SESSION_DURATION_MS) {
     
     clearTimeout(logoutTimer);
+    clearInterval(countdownInterval);
+    
+    const expiryTime = Date.now() + initialTimeRemaining;
+    
+    localStorage.setItem(LOCAL_STORAGE_EXPIRY_KEY, expiryTime);
+    
+    let timeRemaining = initialTimeRemaining;
+    
+    const updateCountdown = () => {
+        timeRemaining -= 1000;
+        
+        if (timeRemaining <= 0) {
+            clearInterval(countdownInterval);
+            logoutTimerDisplay.textContent = 'Auto Logout in: 00:00';
+            
+            if (auth.currentUser) {
+                auth.signOut().then(() => {
+                    console.log("Auto-logout triggered by timer expiration.");
+                    alert("Your session has expired due to inactivity. Please log in again.");
+                });
+            }
+            
+            localStorage.removeItem(LOCAL_STORAGE_EXPIRY_KEY);
+            return;
+        }
+        
+        const timeString = formatTime(timeRemaining);
+        logoutTimerDisplay.textContent = `Auto Logout in: ${timeString}`;
+    };
+    
+    updateCountdown();
+    countdownInterval = setInterval(updateCountdown, 1000);
     
     logoutTimer = setTimeout(() => {
-        auth.signOut().then(() => {
-            console.log("Auto-logout successful after 10 minutes of inactivity.");
-            alert("Your session has expired. Please log in again.");
-        }).catch((error) => {
-            console.error("Auto-logout failed:", error);
-        });
-    }, SESSION_DURATION_MS);
+        
+        console.log("Fallback logout timeout reached.");
+    }, initialTimeRemaining);
     
-    console.log(`New logout timer set for ${SESSION_DURATION_MS / 60000} minutes.`);
+    const durationMinutes = initialTimeRemaining / 60000;
+    console.log(`New auto-logout timer set for ${durationMinutes.toFixed(2)} minutes.`);
 }
 
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
@@ -65,9 +113,11 @@ document.addEventListener('keypress', resetLogoutTimer);
 document.addEventListener('scroll', resetLogoutTimer);
 
 function resetLogoutTimer() {
-    
     if (auth.currentUser) {
-        startLogoutTimer();
+        
+        startLogoutTimer(SESSION_DURATION_MS);
+        const now = new Date().toLocaleTimeString();
+        console.log(`User activity detected at ${now}. Auto-logout timer reset.`);
     }
 }
 
@@ -75,20 +125,48 @@ function updateUI(user) {
     if (user) {
         authContainer.style.display = 'none';
         protectedContent.style.display = 'block';
+        controlsContainer.classList.add('visible');
         console.log("User signed in:", user.email);
-        startLogoutTimer();
         document.body.classList.remove('login-page');
+        
+        const storedExpiryTime = localStorage.getItem(LOCAL_STORAGE_EXPIRY_KEY);
+        let timeToStartFrom = SESSION_DURATION_MS;
+        
+        if (storedExpiryTime) {
+            const timeRemaining = storedExpiryTime - Date.now();
+            
+            if (timeRemaining > 1000) {
+                timeToStartFrom = timeRemaining;
+                console.log(`Resuming timer from ${formatTime(timeRemaining)} after refresh.`);
+            } else {
+                
+                console.log("Session expired during refresh. Forcing logout.");
+                localStorage.removeItem(LOCAL_STORAGE_EXPIRY_KEY);
+                auth.signOut();
+                return;
+            }
+        } else {
+            console.log("Starting new timer (no local expiry found).");
+        }
+        
+        startLogoutTimer(timeToStartFrom);
+        
     } else {
         authContainer.style.display = 'block';
         protectedContent.style.display = 'none';
+        controlsContainer.classList.remove('visible');
+        
         authErrorMessage.textContent = '';
         console.log("User signed out.");
         clearTimeout(logoutTimer);
+        clearInterval(countdownInterval);
+        localStorage.removeItem(LOCAL_STORAGE_EXPIRY_KEY);
         document.body.classList.add('login-page');
     }
 }
 
 auth.onAuthStateChanged(updateUI);
+
 if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
