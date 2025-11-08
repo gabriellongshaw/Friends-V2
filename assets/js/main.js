@@ -26,7 +26,11 @@ const firebaseConfig = {
     measurementId: "G-T8CE5LTRS7"
 };
 
-firebase.initializeApp(firebaseConfig);
+if (typeof firebase !== 'undefined') {
+    firebase.initializeApp(firebaseConfig);
+} else {
+    console.error("Firebase SDK not loaded. Please ensure the Firebase initialization scripts are included in your HTML.");
+}
 
 const auth = firebase.auth();
 const db = firebase.firestore();
@@ -79,7 +83,7 @@ function startLogoutTimer(initialTimeRemaining = SESSION_DURATION_MS) {
             if (auth.currentUser) {
                 auth.signOut().then(() => {
                     console.log("Auto-logout triggered by timer expiration.");
-                    alert("Your session has expired due to inactivity. Please log in again.");
+                    alert("Your session has expired due to expiration. Please log in again.");
                 });
             }
             
@@ -99,25 +103,13 @@ function startLogoutTimer(initialTimeRemaining = SESSION_DURATION_MS) {
     }, initialTimeRemaining);
     
     const durationMinutes = initialTimeRemaining / 60000;
-    console.log(`New auto-logout timer set for ${durationMinutes.toFixed(2)} minutes.`);
+    console.log(`Strict auto-logout timer set for ${durationMinutes.toFixed(2)} minutes.`);
 }
 
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
     .catch((error) => {
         console.error("Failed to set local persistence:", error);
     });
-
-document.addEventListener('mousemove', resetLogoutTimer);
-document.addEventListener('keypress', resetLogoutTimer);
-document.addEventListener('scroll', resetLogoutTimer);
-
-function resetLogoutTimer() {
-    if (auth.currentUser) {
-        startLogoutTimer(SESSION_DURATION_MS);
-        const now = new Date().toLocaleTimeString();
-        console.log(`User activity detected at ${now}. Auto-logout timer reset.`);
-    }
-}
 
 function updateUI(user) {
     if (user) {
@@ -172,28 +164,26 @@ if (loginForm) {
         const inputUsername = loginForm.querySelector('#login-username').value.toLowerCase();
         const password = loginForm.querySelector('#login-password').value;
         
-        const FIXED_USERNAME_DOC = 'friends.secureaccess';
-        
         authErrorMessage.textContent = '';
         const loginBtn = document.getElementById('login-button');
         loginBtn.disabled = true;
         loginBtn.textContent = 'Verifying...';
         
         try {
-            if (inputUsername !== FIXED_USERNAME_DOC) {
-                throw { code: 'custom/username-mismatch', message: 'Invalid username or password.' };
-            }
-            
-            const userRef = db.collection('usernames').doc(FIXED_USERNAME_DOC);
+            const userRef = db.collection('usernames').doc(inputUsername);
             const doc = await userRef.get();
             
             if (!doc.exists) {
-                throw { code: 'custom/db-error', message: 'Configuration error: Cannot find access key.' };
+                throw { code: 'custom/username-not-found', message: 'Invalid username or password.' };
             }
             
             const userData = doc.data();
             const firebaseEmail = userData.email;
             
+            if (!firebaseEmail) {
+                 throw { code: 'custom/config-error', message: 'Configuration error: User email not found.' };
+            }
+
             loginBtn.textContent = 'Signing in...';
             
             await auth.signInWithEmailAndPassword(firebaseEmail, password);
@@ -212,7 +202,7 @@ if (loginForm) {
                         message = 'Invalid username or password.';
                         break;
                     case 'auth/invalid-email':
-                        message = 'An internal error occurred.';
+                        message = 'An internal error occurred (invalid configuration email).';
                         break;
                     case 'auth/too-many-requests':
                         message = 'Access temporarily blocked.';
