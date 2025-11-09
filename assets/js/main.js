@@ -109,10 +109,12 @@ auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
 
 function updateUI(user) {
     if (user) {
+        authContainer.classList.remove('show');
         authContainer.style.display = 'none';
         protectedContent.style.display = 'block';
+        requestAnimationFrame(() => protectedContent.classList.add('show'));
+        
         controlsContainer.classList.add('visible');
-        console.log("User signed in:", user.email);
         document.body.classList.remove('login-page');
         
         const storedExpiryTime = localStorage.getItem(LOCAL_STORAGE_EXPIRY_KEY);
@@ -120,39 +122,35 @@ function updateUI(user) {
         
         if (storedExpiryTime) {
             const timeRemaining = storedExpiryTime - Date.now();
-            
             if (timeRemaining > 1000) {
                 timeToStartFrom = timeRemaining;
-                console.log(`Resuming timer from ${formatTime(timeRemaining)} after refresh.`);
             } else {
-                
-                console.log("Session expired during refresh. Forcing logout.");
                 localStorage.removeItem(LOCAL_STORAGE_EXPIRY_KEY);
                 auth.signOut();
                 return;
             }
-        } else {
-            console.log("Starting new timer (no local expiry found).");
         }
-        
         startLogoutTimer(timeToStartFrom);
         
     } else {
-        authContainer.style.display = 'block';
+        protectedContent.classList.remove('show');
         protectedContent.style.display = 'none';
-        controlsContainer.classList.remove('visible');
+        authContainer.style.display = 'flex';
+        requestAnimationFrame(() => authContainer.classList.add('show'));
         
-        authErrorMessage.textContent = '';
-        authErrorMessage.classList.remove('show-error');
-        console.log("User signed out.");
+        controlsContainer.classList.remove('visible');
+        document.body.classList.add('login-page');
+        
         clearTimeout(logoutTimer);
         clearInterval(countdownInterval);
         localStorage.removeItem(LOCAL_STORAGE_EXPIRY_KEY);
-        document.body.classList.add('login-page');
     }
 }
 
-auth.onAuthStateChanged(updateUI);
+firebase.auth().onAuthStateChanged((user) => {
+    document.body.classList.add('ready');
+    updateUI(user);
+});
 
 if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {

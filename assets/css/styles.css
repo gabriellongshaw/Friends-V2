@@ -28,11 +28,8 @@ body.dark {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -webkit-tap-highlight-color: transparent;
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -42,11 +39,11 @@ body {
   min-height: 100vh;
   margin: 0;
   padding: 2rem 0 0;
-  transition: background 0.2s ease, color 0.2s ease, justify-content 0.2s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 body.login-page {
@@ -54,14 +51,15 @@ body.login-page {
   overflow: hidden;
 }
 
-.container {
+.container,
+#protected-content {
   max-width: 900px;
   width: 90%;
-  animation: fadeIn 1s ease;
-  padding: 1rem 0; 
+  padding: 1rem 0;
   margin: 0 auto;
   flex-grow: 1;
   text-align: center;
+  animation: fadeIn 1s ease;
 }
 
 .header {
@@ -69,10 +67,6 @@ body.login-page {
   justify-content: center;
   align-items: center;
   margin: 1rem 0;
-  text-align: center;
-}
-
-.header-info {
   text-align: center;
 }
 
@@ -97,7 +91,7 @@ p {
 
 .profiles-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 30px;
   margin: 2rem 0;
   text-align: left;
@@ -108,7 +102,7 @@ p {
   border: 1px solid var(--card-border);
   padding: 20px;
   border-radius: 28px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .profile-picture {
@@ -124,18 +118,17 @@ p {
 }
 
 .profile-picture img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .profile-card h3 {
   font-weight: 500;
   letter-spacing: 1px;
   text-transform: uppercase;
-  margin-top: 0;
-  margin-bottom: 0.3rem;
+  margin: 0 0 0.3rem;
   color: var(--text);
   font-size: 1.2rem;
 }
@@ -164,14 +157,12 @@ p {
 
 footer {
   width: 100%;
-  padding: 0 2rem 2rem ;
-  margin: 0;
+  padding: 0 2rem 2rem;
 }
 
 .copyright {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    margin-top: 0;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
 }
 
 .socials {
@@ -183,10 +174,9 @@ footer {
   color: var(--text);
   fill: var(--text);
   width: 20px;
-  height: 2px;
   opacity: 0.7;
+  margin: 0.5rem;
   transition: opacity 0.2s ease;
-  margin: 0.5rem 0.5rem;
 }
 
 .socials a:hover {
@@ -194,61 +184,51 @@ footer {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .controls {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-    background: var(--bg);
-    box-shadow: 0 0 0 transparent;
-    padding: 0.5rem 0;
-    opacity: 0; 
-    transition: opacity 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  background: var(--bg);
+  box-shadow: 0 0 0 transparent;
+  padding: 0.5rem 0;
+  opacity: 0;
+  transition: opacity 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
-.controls.scrolled {
-  box-shadow: 0 1px 0 var(--divider-color);
-}
-
-.controls.visible {
-    opacity: 1;
-}
+.controls.visible { opacity: 1; }
+.controls.scrolled { box-shadow: 0 1px 0 var(--divider-color); }
 
 .controls-inner {
-    max-width: 900px;
-    width: 90%;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  max-width: 900px;
+  width: 90%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .logout-button {
   padding: 8px 15px;
-  background-color: transparent;
+  background: transparent;
   border: none;
   color: var(--text);
-  opacity: 1;
-  pointer-events: auto;
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
   transition: opacity 0.2s ease;
 }
 
-.logout-button:hover {
-  opacity: 0.7;
-}
+.logout-button:hover { opacity: 0.7; }
 
 .logout-timer-display {
   color: var(--text);
   font-size: 0.85rem;
   font-weight: 400;
-  transition: opacity 0.2s ease;
 }
 
 #auth-container {
@@ -257,20 +237,20 @@ footer {
   justify-content: center;
   align-items: center;
   padding: 20px;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: opacity 0.2s ease;
 }
 
 .login-box {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
-  padding: 30px 30px 0px;
+  padding: 30px 30px 0;
   border-radius: 28px;
   max-width: 400px;
   width: 100%;
   margin: 0 auto;
   text-align: center;
   box-shadow: 0 0 20px var(--card-hover-shadow);
-  transition: box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease, padding 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .login-box h2 {
@@ -291,21 +271,18 @@ footer {
 
 .input-group input {
   width: 100%;
-  padding: 12px;
-  padding-right: 35px !important; 
+  padding: 12px 35px 12px 12px;
   font-size: 1rem;
   border: 2px solid var(--divider-color);
   border-radius: 8px;
   outline: none;
-  background-color: var(--card-bg);
-  color: var(--text);               
-  box-sizing: border-box;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, padding 0.2s ease;
+  background: var(--card-bg);
+  color: var(--text);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .input-group input:focus {
   border-color: var(--text);
-  box-shadow: 0 0 0 4px rgba(0,0,0,0);
 }
 
 .input-group label {
@@ -314,13 +291,11 @@ footer {
   top: 16px;
   font-size: 1rem;
   font-weight: 400;
-  color: var(--text-secondary);     
+  color: var(--text-secondary);
   pointer-events: none;
-  transition: transform 0.2s ease, top 0.2s ease, font-size 0.2s ease, color 0.2s ease; 
-  background-color: var(--card-bg);
+  background: var(--card-bg);
   padding: 0 4px;
-  transform-origin: left top;
-  line-height: 1;
+  transition: all 0.2s ease;
 }
 
 .input-group input:focus + label,
@@ -328,27 +303,15 @@ footer {
   top: -8px;
   font-size: 0.8rem;
   color: var(--text);
+  padding: 0 6px;
 }
 
-.input-group input:not(:focus):not(:placeholder-shown) + label {
-  color: var(--text-secondary);
-}
-
-.input-group input:focus + label,
-.input-group input:not(:placeholder-shown) + label {
-  padding-left: 6px;
-  padding-right: 6px;
-}
-
-.input-group input::placeholder {
-  color: transparent;
-}
+.input-group input::placeholder { color: transparent; }
 
 .login-button {
   width: 100%;
   padding: 12px;
-  margin: 0;
-  background-color: var(--text);
+  background: var(--text);
   color: var(--bg);
   border: none;
   border-radius: 8px;
@@ -358,16 +321,14 @@ footer {
   transition: opacity 0.2s ease;
 }
 
-.login-button:hover {
-  opacity: 0.9;
-}
+.login-button:hover { opacity: 0.9; }
 
 .error-message {
   color: #ff4d4d;
   margin-top: 0.5rem;
   font-weight: 500;
   opacity: 0;
-  max-height: 0; 
+  max-height: 0;
   overflow: hidden;
   transition: opacity 0.2s ease, max-height 0.2s ease;
 }
@@ -377,22 +338,17 @@ footer {
   max-height: 50px;
 }
 
-.password-group {
-    position: relative;
-}
+.password-group { position: relative; }
 
 .password-toggle {
   background: transparent;
   border: none;
-  padding: 0;
-  box-shadow: none;
   position: absolute;
   right: 15px;
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
   color: var(--password-toggle);
-  z-index: 10;
   visibility: hidden;
   opacity: 0;
   transition: opacity 0.2s ease, visibility 0.2s ease;
@@ -406,16 +362,14 @@ footer {
 .password-toggle svg {
   width: 1.1rem;
   height: 1.1rem;
-  display: block;
   stroke: currentColor;
   fill: none;
 }
 
 #eye-slash-line {
   stroke-dasharray: 35;
-  transition: stroke-dashoffset 0.2s ease-in-out;
   stroke-dashoffset: 0;
-  opacity: 1;
+  transition: stroke-dashoffset 0.2s ease-in-out;
 }
 
 .password-toggle.shown #eye-slash-line {
@@ -423,58 +377,58 @@ footer {
   opacity: 0.8;
 }
 
+#auth-container,
 #protected-content {
-  max-width: 900px;
-  width: 90%;
-  animation: fadeIn 1s ease;
-  padding: 1rem 0; 
-  margin: 0 auto;
-  flex-grow: 1;
-  text-align: center;
   opacity: 0;
-  transform: translateY(20px);
   visibility: hidden;
-  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s 0.2s;
+  display: none;
+  transition: opacity 0.4s ease, visibility 0s 0.4s;
 }
 
-#protected-content[style*="display: block"] {
-    opacity: 1 !important; 
-    transform: translateY(0) !important;
-    visibility: visible !important;
-    transition-delay: 0.2s;
+#auth-container.show,
+#protected-content.show {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.4s ease;
+}
+
+body:not(.ready) #auth-container,
+body:not(.ready) #protected-content {
+  display: none !important;
 }
 
 @media (min-width: 500px) and (max-height: 500px) {
-  #auth-container {
+  #auth-container { 
     padding: 10px;
+    }
+  .login-box { 
+    padding: 20px 20px 10px;
   }
-  .login-box {
-    padding: 20px 20px 10px; 
-  }
-  .login-box h2 {
-    font-size: 1.4rem;
+  .login-box h2 { 
+    font-size: 1.4rem; 
     margin-bottom: 0.3rem;
   }
-  .login-box p {
+  .login-box p { 
     margin-bottom: 1rem;
     font-size: 0.85rem;
   }
-  .input-group input {
+  .input-group input { 
     padding: 10px 12px;
   }
-  .input-group label {
+  .input-group label { 
     font-size: 0.9rem;
   }
   .input-group input:focus + label,
   .input-group input:not(:placeholder-shown) + label {
-    top: -8px; 
+    top: -8px;
     font-size: 0.75rem;
   }
-  .login-button {
+  .login-button { 
     padding: 10px;
     font-size: 0.9rem;
-  }
-  .error-message {
+    }
+  .error-message { 
     margin-top: 5px;
+    }
   }
-}
