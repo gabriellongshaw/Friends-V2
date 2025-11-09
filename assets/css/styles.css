@@ -243,7 +243,7 @@ footer {
 .login-box {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
-  padding: 30px 30px 0;
+  padding: 35px 35px 45px;
   border-radius: 28px;
   max-width: 400px;
   width: 100%;
@@ -321,21 +321,26 @@ footer {
   transition: opacity 0.2s ease;
 }
 
-.login-button:hover { opacity: 0.9; }
+.login-button:hover { 
+  opacity: 0.9;
+}
 
 .error-message {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0.5rem auto;
   color: #ff4d4d;
-  margin-top: 0.5rem;
   font-weight: 500;
+  font-size: 0.85rem;
   opacity: 0;
-  max-height: 0;
-  overflow: hidden;
-  transition: opacity 0.2s ease, max-height 0.2s ease;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
 }
 
 .error-message.show-error {
   opacity: 1;
-  max-height: 50px;
 }
 
 .password-group {
