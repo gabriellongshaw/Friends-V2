@@ -338,7 +338,23 @@ footer {
   max-height: 50px;
 }
 
-.password-group { position: relative; }
+.password-group {
+  position: relative;
+}
+
+.password-group input {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.password-group.fade-out input {
+  opacity: 0;
+  transform: scale(0.98);
+}
+
+.password-group.fade-in input {
+  opacity: 1;
+  transform: scale(1);
+}
 
 .password-toggle {
   background: transparent;
@@ -368,13 +384,15 @@ footer {
 
 #eye-slash-line {
   stroke-dasharray: 35;
-  stroke-dashoffset: 0;
-  transition: stroke-dashoffset 0.2s ease-in-out;
+  stroke-dashoffset: 35;
+  opacity: 0;
+  transition: stroke-dashoffset 0.25s cubic-bezier(0.25, 0.1, 0.25, 1),
+    opacity 0.2s ease-out;
 }
 
 .password-toggle.shown #eye-slash-line {
-  stroke-dashoffset: 35;
-  opacity: 0.8;
+  stroke-dashoffset: 0;
+  opacity: 1;
 }
 
 #auth-container,
@@ -427,8 +445,8 @@ body:not(.ready) #protected-content {
   .login-button { 
     padding: 10px;
     font-size: 0.9rem;
-    }
+  }
   .error-message { 
     margin-top: 5px;
-    }
   }
+}

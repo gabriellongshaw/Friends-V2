@@ -248,28 +248,31 @@ if (logoutButton) {
 
 const passwordInput = document.getElementById('login-password');
 const passwordToggle = document.getElementById('password-toggle');
+const passwordGroup = document.querySelector('.password-group');
 
 if (passwordInput && passwordToggle) {
-    
     passwordInput.addEventListener('input', () => {
-        if (passwordInput.value.length > 0) {
-            passwordToggle.disabled = false;
-        } else {
-            passwordToggle.disabled = true;
-        }
+        passwordToggle.disabled = passwordInput.value.length === 0;
     });
-
+    
     passwordToggle.addEventListener('click', () => {
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
+        passwordGroup.classList.add('fade-out');
         
-        if (type === 'text') {
-            passwordToggle.classList.add('shown');
-            passwordToggle.setAttribute('aria-label', 'Hide password');
-        } else {
-            passwordToggle.classList.remove('shown');
-            passwordToggle.setAttribute('aria-label', 'Show password');
-        }
+        setTimeout(() => {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            if (type === 'text') {
+                passwordToggle.classList.add('shown');
+                passwordToggle.setAttribute('aria-label', 'Hide password');
+            } else {
+                passwordToggle.classList.remove('shown');
+                passwordToggle.setAttribute('aria-label', 'Show password');
+            }
+            
+            passwordGroup.classList.remove('fade-out');
+            passwordGroup.classList.add('fade-in');
+            setTimeout(() => passwordGroup.classList.remove('fade-in'), 250);
+        }, 150);
     });
 }
 
